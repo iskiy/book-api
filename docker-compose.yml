@@ -1,0 +1,34 @@
+
+version: "3.3"
+
+services:
+  redis:
+    container_name: redis
+    hostname: redishost
+    image: redis:alpine
+    networks:
+      - dev-network
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27020:27020'
+    networks:
+      - dev-network
+
+  book-api:
+    container_name: book-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - dev-network
+    depends_on:
+      - redis
+      - mongo
+
+networks:
+  dev-network:
+    driver: bridge
